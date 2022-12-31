@@ -1,0 +1,21 @@
+.cell {
+    width: 10em;
+    height: 10em;
+    display: flex;
+    justify-content: center;
+
+    .piece {
+        margin: auto;
+        font-size: 5em;
+    }
+}
+
+.vert {
+    border-left: 2px solid lightblue;
+    border-right: 2px solid lightblue;
+}
+
+.horiz {
+    border-top: 2px solid lightblue;
+    border-bottom: 2px solid lightblue;
+}

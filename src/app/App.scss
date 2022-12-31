@@ -1,0 +1,19 @@
+.parent {
+    .menu {
+        display: block;
+        
+        .anchor {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: large;
+        }
+    }
+
+    .component {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+}

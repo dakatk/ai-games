@@ -1,14 +1,38 @@
+// Basic React stuff
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
 
+// MUI themes
+import {
+    ThemeProvider,
+    createTheme,
+    Theme
+} from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+// App routing
+import Routing from './Routing';
+
+// Stylesheet
+import './index.scss';
+
+// Create root element from DOM
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 
+// Use MUI dark theme as global theme
+const darkTheme: Theme = createTheme({
+    palette: {
+        mode: 'dark',
+    }
+});
+
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <React.StrictMode>
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Routing />
+        </ThemeProvider>
+    </React.StrictMode>
 );
