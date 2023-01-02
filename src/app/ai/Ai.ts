@@ -1,7 +1,21 @@
-import GameLogic from "../game/logic/GameLogic";
+import GameLogic from '../game/logic/GameLogic';
 
+/**
+ * Different ways a game can end
+ */
 export enum GameEnd {
-    WIN, LOSE, DRAW
+    /**
+     * Win
+     */
+    WIN,
+    /**
+     * Lose
+     */
+    LOSE,
+    /**
+     * Draw
+     */
+    DRAW
 }
 
 /**
@@ -13,7 +27,7 @@ export default interface Ai<TMove> {
      * 
      * @param game Game logic
      */
-    bestMove(game: GameLogic<TMove>, deser: (moveSer: string) => TMove): TMove | null;
+    bestMove(game: GameLogic<TMove>): TMove | null;
 
     /**
      * Updates AI's internal parameters (if applicable)

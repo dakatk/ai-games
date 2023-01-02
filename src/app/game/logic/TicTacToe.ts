@@ -1,5 +1,5 @@
 // Game logic base
-import GameLogic, { Player } from "./GameLogic";
+import GameLogic, { Player } from './GameLogic';
 
 // Type alias for moves
 export type Move = [number, number];

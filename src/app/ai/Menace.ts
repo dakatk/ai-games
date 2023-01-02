@@ -4,48 +4,71 @@ import Logic, { Player } from '../game/logic/GameLogic';
 // AI logic base
 import Ai, { GameEnd } from './Ai';
 
-interface MatchboxCollection {
-    [state: string] : Matchbox
+interface MatchboxCollection<TMove> {
+    [state: string] : Array<MatchboxState<TMove>>
 }
 
-type Matchbox = {
-    [move: string]: number;
+interface MatchboxState<TMove> {
+    move: TMove;
+    beads: number;
 };
+
+type Matchbox<TMove> = Array<MatchboxState<TMove>>;
 
 /**
  * Matchbox Educable Naughts and Crosses Engine
  */
 export default class Menace<TMove extends object> implements Ai<TMove> {
-    private matchboxes: MatchboxCollection = {};
-    private history: Array<[string, string]> = [];
+    private matchboxes: MatchboxCollection<TMove> = {};
+    private history: Array<MatchboxState<TMove>> = [];
 
     constructor(private defaultBeads: number = 3) {}
 
-    bestMove(game: Logic<TMove>, deser: (moveSer: string) => TMove): TMove | null {
+    bestMove(game: Logic<TMove>): TMove | null {
         const gameState: string = game.repr;
 
         if (!(gameState in this.matchboxes)) {
-            const newMatchbox: Matchbox = {};
             const allowedMoves: Array<TMove> = game.allowedMoves(Player.CPU);
+            const newMatchbox: Matchbox<TMove> = allowedMoves.map((move: TMove) => (
+                { move, beads: this.defaultBeads }
+            ));
             
-            for (const move of allowedMoves) {
-                newMatchbox[move.toString()] = this.defaultBeads;
-            }
+            this.matchboxes[gameState] = newMatchbox;
         }
 
-        const currentMatchbox: Matchbox = this.matchboxes[gameState];
+        const currentMatchbox: Matchbox<TMove> = this.matchboxes[gameState];
 
-        if (Object.keys(currentMatchbox).length === 0) {
+        if (currentMatchbox.length === 0) {
             return null;
         }
 
-        const bestMove: [string, number] = Object.entries(currentMatchbox)
-            .reduce((a: [string, number], b: [string, number]) => (
-                a[1] > b[1] ? a : b
-            ));
+        const randomState: MatchboxState<TMove> = this.weightedRandom(currentMatchbox);
+        this.history.unshift(randomState);
+
+        return randomState.move;
+    }
+
+    /**
+     * 
+     * @param options 
+     * @returns 
+     */
+    private weightedRandom(options: Array<MatchboxState<TMove>>): MatchboxState<TMove> {
+        const weights: Array<number> = [];
+        let i;
+
+        for (i = 0; i < options.length; i++) {
+            weights[i] = options[i].beads + (weights[i - 1] || 0);
+        }
         
-        this.history.unshift([gameState, bestMove[0]]);
-        return deser(bestMove[0]);
+        var random = Math.random() * weights[weights.length - 1];
+        
+        for (i = 0; i < weights.length; i++) {
+            if (weights[i] > random) {
+                break;
+            }
+        }
+        return options[i];
     }
     
     update(gameEnd: GameEnd): void {
@@ -64,8 +87,8 @@ export default class Menace<TMove extends object> implements Ai<TMove> {
                 break;
         }
 
-        for (const [gameState, bestMove] of this.history) {
-            this.matchboxes[gameState][bestMove] += beadsDelta;
+        for (const move of this.history) {
+            move.beads += beadsDelta;
         }
     }
 }

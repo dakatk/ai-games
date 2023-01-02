@@ -1,9 +1,16 @@
+// Basic React stuff
 import React from 'react';
 
+// Query string parser
 import queryString, { ParsedQuery } from 'query-string';
 
+// Game logic
 import GameLogic, { Player } from './logic/GameLogic';
+
+// AI logic base
 import Ai, { GameEnd } from '../ai/Ai';
+
+// AI implementations
 import Menace from '../ai/Menace';
 import Negamax from '../ai/Negamax';
 
@@ -51,7 +58,7 @@ export default class GameComponent<TMove extends object> extends React.Component
                 return new Menace<TMove>();
 
             case AiType.NEGAMAX:
-                return new Negamax();
+                return new Negamax(10);
         }
     }
 
@@ -78,7 +85,7 @@ export default class GameComponent<TMove extends object> extends React.Component
             return;
         }
 
-        const aiMove: TMove | null = this.ai.bestMove(this.gameLogic, this.deserMove);
+        const aiMove: TMove | null = this.ai.bestMove(this.gameLogic);
 
         if (aiMove === null) {
             await this.setStateAsync({ gameover: true, winMessage: 'AI forfeits!' });
@@ -100,10 +107,6 @@ export default class GameComponent<TMove extends object> extends React.Component
             await this.setStateAsync({ gameover: true, winMessage: 'Tie game' });
             this.ai.update(GameEnd.DRAW);
         }
-    }
-
-    protected deserMove(moveSer: string): TMove {
-        throw new Error('Deser called from parent (not implemented)');
     }
 
     protected async update() {
