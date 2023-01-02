@@ -18,7 +18,7 @@ type Matchbox<TMove> = Array<MatchboxState<TMove>>;
 /**
  * Matchbox Educable Naughts and Crosses Engine
  */
-export default class Menace<TMove extends object> implements Ai<TMove> {
+export default class Menace<TMove> implements Ai<TMove> {
     private matchboxes: MatchboxCollection<TMove> = {};
     private history: Array<MatchboxState<TMove>> = [];
 

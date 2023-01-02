@@ -28,8 +28,8 @@ export default class Routing extends React.Component {
         return (
             <Route path={homePath} element={<App />}>
                 <Route path='' element={<Home />} />
-                <Route path='tictactoe' element={<TicTacToe />} />
-                <Route path='chess' element={<Chess />} />
+                <Route path='tictactoe' element={<TicTacToe searchDepth={10} />} />
+                <Route path='chess' element={<Chess searchDepth={4} />} />
                 <Route path="*" element={<NotFound />} />
             </Route>
         )

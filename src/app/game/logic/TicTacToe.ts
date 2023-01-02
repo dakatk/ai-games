@@ -22,19 +22,38 @@ export default class TicTacToeLogic implements GameLogic<Move> {
         [[0, 2], [1, 1], [2, 0]]
     ];
 
-    private boardArray: Array<Array<number>> = [
+    private _boardArray: Array<Array<number>> = [
         [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
     ];
 
-    private movesQueue: Array<Move> = [];
+    private _movesQueue: Array<Move> = [];
+
+    get board(): Array<Array<number>> {
+        return this._boardArray
+    }
+
+    get repr(): string {
+        return this._boardArray.map((row) => (
+            row.map((col) => {
+                switch (col) {
+                    case Player.HUMAN:
+                        return 'X';
+                    case Player.CPU:
+                        return 'O';
+                    default: 
+                        return '';
+                }    
+            }).join('')
+        )).join('');
+    }
 
     allowedMoves(_: Player): Array<Move> {
         const moves: Array<Move> = [];
 
-        for (let i = 0; i < this.boardArray.length; i ++) {
-            const row = this.boardArray[i];
+        for (let i = 0; i < this._boardArray.length; i ++) {
+            const row = this._boardArray[i];
 
             for (let j = 0; j < row.length; j ++) {
                 if (row[j] === 0) {
@@ -47,17 +66,17 @@ export default class TicTacToeLogic implements GameLogic<Move> {
 
     move(player: Player, movePos: Move, enqueue?: boolean | undefined) {
         if (enqueue) {
-            this.movesQueue.unshift(movePos);
+            this._movesQueue.unshift(movePos);
         }
         const row: number = movePos[0];
         const col: number = movePos[1];
 
-        this.boardArray[row][col] = player;
+        this._boardArray[row][col] = player;
     }
 
     canWin(player: Player): boolean {
-        for (let i = 0; i < this.boardArray.length; i ++) {
-            const row = this.boardArray[i];
+        for (let i = 0; i < this._boardArray.length; i ++) {
+            const row = this._boardArray[i];
 
             for (let j = 0; j < row.length; j ++) {
                 if (row[j] !== 0) {
@@ -77,15 +96,15 @@ export default class TicTacToeLogic implements GameLogic<Move> {
     }
 
     undoMove() {
-        if (this.movesQueue.length === 0) {
+        if (this._movesQueue.length === 0) {
             return;
         }
 
-        const move: Move = this.movesQueue.shift() as Move;
+        const move: Move = this._movesQueue.shift() as Move;
         const row: number = move[0];
         const col: number = move[1];
 
-        this.boardArray[row][col] = 0;
+        this._boardArray[row][col] = 0;
     }
 
     score(player: Player, depth?: number | undefined): number {
@@ -99,48 +118,14 @@ export default class TicTacToeLogic implements GameLogic<Move> {
     }
 
     isOver(): boolean {
-        throw this.isWinner(Player.HUMAN) || this.isWinner(Player.CPU) || this.numMovesLeft() === 0;
-    }
-
-    isWinner(player: Player): boolean {
-        const magicNumber: number = player * 3;
-
-        for (const winCheck of TicTacToeLogic.winChecks) {
-            const winSum: number = winCheck.reduce((_: number, move: Move) => (
-                this.pieceAt(move)
-            ), 0);
-
-            if (winSum === magicNumber) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    get board(): Array<Array<number>> {
-        return this.boardArray
-    }
-
-    get repr(): string {
-        return this.board.map((row) => (
-            row.map((col) => {
-                switch (col) {
-                    case Player.HUMAN:
-                        return 'X';
-                    case Player.CPU:
-                        return 'O';
-                    default: 
-                        return '';
-                }    
-            }).join('')
-        )).join('');
+        return this.isWinner(Player.HUMAN) || this.isWinner(Player.CPU) || (this.numMovesLeft() === 0);
     }
 
     private numMovesLeft(): number {
         let numMoves = 0;
 
-        for (let i = 0; i < this.boardArray.length; i ++) {
-            const row = this.boardArray[i];
+        for (let i = 0; i < this._boardArray.length; i ++) {
+            const row = this._boardArray[i];
 
             for (let j = 0; j < row.length; j ++) {
                 if (row[j] === 0) {
@@ -151,10 +136,33 @@ export default class TicTacToeLogic implements GameLogic<Move> {
         return numMoves
     }
 
+    isWinner(player: Player): boolean {
+        const magicNumber: number = player * 3;
+
+        for (const winCheck of TicTacToeLogic.winChecks) {
+            const winSum: number = winCheck.reduce((accum: number, move: Move) => (
+                accum + this.pieceAt(move)
+            ), 0);
+
+            if (winSum === magicNumber) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private pieceAt(move: Move): number {
         const row: number = move[0];
         const col: number = move[1];
 
         return this.board[row][col];
-    } 
+    }
+
+    reset() {
+        this._boardArray = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+    }
 }

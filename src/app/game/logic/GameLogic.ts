@@ -13,18 +13,17 @@ export enum Player {
     CPU = 1
 }
 
+const _opposingPlayer: Record<Player, Player> = {
+    [Player.HUMAN]: Player.CPU,
+    [Player.CPU]: Player.HUMAN
+}
+
 /**
  * @param player Human or AI
  * @returns Opposing player to `player`
  */
 export function opposing(player: Player): Player {
-    switch (player) {
-        case Player.HUMAN: 
-            return Player.CPU
-
-        case Player.CPU:
-            return Player.HUMAN
-    }
+    return _opposingPlayer[player];
 }
 
 /**
@@ -90,4 +89,9 @@ export default interface GameLogic<TMove> {
      * @param player Human or AI
      */
     isWinner(player: Player): boolean;
+
+    /**
+     * Resets game to initial state
+     */
+    reset(): void;
 }
