@@ -36,3 +36,10 @@ export interface AppContextData {
 export const AppContext: React.Context<AppContextData> = React.createContext({
     aiType: AiType.NEGAMAX as AiType
 });
+
+/**
+ * Default app context
+ */
+export const DEFAULT_CONTEXT: AppContextData = {
+    aiType: AiType.NEGAMAX
+};

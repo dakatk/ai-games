@@ -5,7 +5,7 @@ import React from 'react';
 import AsyncComponent from './AsyncComponent';
 
 // React router components
-import { Link as RouterLink, Outlet } from 'react-router-dom';
+import { Link as RouterLink, Location, NavigateFunction, Outlet, Params } from 'react-router-dom';
 
 // MUI components
 import AppBar from '@mui/material/AppBar';
@@ -20,15 +20,14 @@ import Tab from '@mui/material/Tab';
 import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-// App context
-import { AppContext, AppContextData } from './AppContext';
+// Other components
+import ContextFormControls from './ContextFormControls';
 
-// AI stuff
-import AiType from './ai/AiType';
+// App context
+import { AppContext, AppContextData, DEFAULT_CONTEXT } from './AppContext';
 
 // Stylesheet
 import './App.scss'
-import ContextFormControls from './ContextFormControls';
 
 /** 
  * Data for menu nav items
@@ -42,6 +41,29 @@ interface NavItem {
      * URL to navigate to upon clicking menu item
      */
     path: string
+}
+
+/**
+ * App component props (with router data)
+ */
+interface AppWithRouterProps {
+    /**
+     * Router data
+     */
+    router: {
+        /**
+         * Current location (URL)
+         */
+        location: Location,
+        /**
+         * Navigate function
+         */
+        navigate: NavigateFunction,
+        /**
+         * URL parameters
+         */
+        params: Readonly<Params<string>>
+    }
 }
 
 /**
@@ -59,17 +81,10 @@ interface AppState {
 }
 
 /**
- * Default app context
- */
-const DEFAULT_CONTEXT: AppContextData = {
-    aiType: AiType.NEGAMAX
-};
-
-/**
  * Main component that handles the global menu bar and 
  * renders the respective component for any given route
  */
-export default class App extends AsyncComponent<any, AppState> {
+export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
     // Menu navigation items
     private static navItems: Array<NavItem> = [
         {
@@ -84,7 +99,7 @@ export default class App extends AsyncComponent<any, AppState> {
 
     // ====================== Initialization =============================
 
-    constructor(props: any) {
+    constructor(props: AppWithRouterProps) {
         super(props);
 
         // Determine which tab to show as selected from
@@ -104,8 +119,15 @@ export default class App extends AsyncComponent<any, AppState> {
     /**
      * Update selected tab name in component state
      */
-    private async handleTabChange(tab: string) {
+    private async handleTabChange(_: React.SyntheticEvent, tab: string) {
         await this.setStateAsync({ tab });
+    }
+
+    /**
+     * Update app context via form controls
+     */
+    private async updateAppContext(context: AppContextData) {
+        await this.setStateAsync({ context });
     }
 
     // ====================== React callback overrides ===================
@@ -143,9 +165,7 @@ export default class App extends AsyncComponent<any, AppState> {
 
                             <ContextFormControls
                                 context={this.state.context || DEFAULT_CONTEXT}
-                                updateContext={async (context: AppContextData) => {
-                                    await this.setStateAsync({ context }); 
-                                }}
+                                updateContext={this.updateAppContext}
                             />
 
                             <Divider
@@ -192,7 +212,7 @@ export default class App extends AsyncComponent<any, AppState> {
         return (
             <Tabs 
                 value={this.state.tab}
-                onChange={async (_: React.SyntheticEvent, newValue: string) => await this.handleTabChange(newValue)}
+                onChange={this.handleTabChange}
                 aria-label='menu nav items'
             >
                 <Tab value='' label='' className='empty-tab' disabled component='div' />
