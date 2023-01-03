@@ -24,6 +24,10 @@ export interface AppContextData {
      * Default bead count for MENACE AI
      */
     defaultBeads?: number;
+
+    // Pay no attention to the man behind the curtain...
+    // (this is strongly typed, I swear)
+    [_: string]: any;
 }
 
 /**
