@@ -1,34 +1,37 @@
 // Basic React stuff
 import React, { ErrorInfo } from 'react';
 
+// Async component base class
+import AsyncComponent from '../AsyncComponent';
+
 // MUI components
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
-// Query string parser
-import queryString, { ParsedQuery } from 'query-string';
+// App context
+import { AppContext, AppContextData } from '../AppContext';
 
 // Game logic
 import GameLogic, { Player } from './logic/GameLogic';
 
-// AI logic base
+// AI stuff
 import Ai, { GameEnd } from '../ai/Ai';
+import AiType from '../ai/AiType';
 
 // AI implementations
 import Menace from '../ai/Menace';
 import Negamax from '../ai/Negamax';
 
-enum AiType {
-    NEGAMAX = 'negamax',
-    MENACE = 'menace'
-}
+// Stylesheet
+import './GameComponent.scss';
 
 /**
  * Game component props
  */
 export interface GameProps {
     /**
-     * Initial value for search depth parameter
+     * Default search depth (not applicable to all AI variants)
      */
     searchDepth: number;
 }
@@ -68,11 +71,26 @@ const DEFAULT_SEARCH_DEPTH: number = 2;
 /**
  * Base component for games
  */
-export default class GameComponent<TMove> extends React.Component<GameProps, GameState> {
+export default class GameComponent<TMove> extends AsyncComponent<GameProps, GameState> {
+    /**
+     * React context type
+     */
+    static contextType: React.Context<AppContextData> = AppContext;
+
+    // TODO Fix typescript declare support in webpack
+    /**
+     * Override type for React context
+     */
+    // declare context: AppContextData;
+
     /**
      * AI logic
      */
-    protected ai: Ai<TMove>;
+    protected ai: Ai<TMove> = new Negamax<TMove>(DEFAULT_SEARCH_DEPTH);
+
+    private prevContext: AppContextData | undefined;
+
+    // ====================== Initialization =============================
 
     constructor(props: GameProps, protected gameLogic: GameLogic<TMove>) {
         super(props);
@@ -82,33 +100,9 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
             board: this.gameLogic.board,
             depth: this.props.searchDepth || DEFAULT_SEARCH_DEPTH
         };
-        this.ai = this.parseQueryParams();
     }
 
-    private parseQueryParams(): Ai<TMove> {
-        const queryParams: ParsedQuery<string> = queryString.parse(window.location.search);
-        const aiParam: string | null = queryParams.ai as (string | null);
-
-        let aiName: string = aiParam?.toUpperCase() || AiType.MENACE;
-
-        if (!(aiName in AiType)) {
-            aiName = AiType.MENACE
-        }
-        
-        const aiType: AiType = AiType[aiName as keyof typeof AiType];
-
-        switch (aiType) {
-            case AiType.MENACE:
-                return new Menace<TMove>();
-
-            case AiType.NEGAMAX:
-                return new Negamax(this.state.depth || DEFAULT_SEARCH_DEPTH);
-        }
-    }
-
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        this.setState({ error, errorInfo });
-    }
+    // ====================== Event handlers =============================
 
     /**
      * Event handler for when the human 
@@ -117,7 +111,6 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
      * @param move Move made by human player
      */
     protected async onMove(move: TMove): Promise<void> {
-        console.log(this.state);
         // Can't make moves for a finished game
         if (this.state.gameover) {
             return;
@@ -177,16 +170,51 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
         await this.setStateAsync({ board: this.gameLogic.board });
     }
 
-    /**
-     * Call React `setState` in async context
-     * 
-     * @param newState Updated component state
-     */
-    protected async setStateAsync(newState: GameState) {
-        return new Promise((resolve) => (
-            this.setState(newState, () => resolve(null))
-        ));
+    // ====================== React callback overrides ===================
+
+    componentDidMount() {
+        this.updateAiFromContext();
     }
+
+    componentDidUpdate() {
+        this.updateAiFromContext();
+    }
+
+    private updateAiFromContext() {
+        if (!this.context || !this.contextIsDirty()) {
+            return;
+        }
+
+        let context = this.context as AppContextData;
+
+        switch (context.aiType) {
+            case AiType.NEGAMAX:
+                // Default search depth value comes from props
+                const searchDepth: number = context.searchDepth || this.props.searchDepth;
+                this.ai = new Negamax(searchDepth, context.maxScore);
+                break;
+
+            case AiType.MENACE:
+                this.ai = new Menace(context.defaultBeads);
+        }
+
+        this.gameLogic.reset();
+        this.setState({ board: this.gameLogic.board });
+    }
+
+    private contextIsDirty(): boolean {
+        if (this.prevContext !== this.context) {
+            this.prevContext = this.context as AppContextData;
+            return true;
+        }
+        return false;
+    }
+
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        this.setState({ error, errorInfo });
+    }
+
+    // ====================== Component rendering ========================
 
     render() {
         return (
@@ -226,7 +254,7 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
      * Message shown after game has ended
      */
     private renderWinMessage(): JSX.Element {
-        return <Box key={1}>{this.state.winMessage}</Box>
+        return <Box key={1} className='win-message'>{this.state.winMessage}</Box>
     }
 
     /**
@@ -234,11 +262,17 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
      */
     private renderResetButton(): JSX.Element {
         return (
-            <button key={3} onClick={async () => {
-                this.gameLogic.reset();
-                await this.setStateAsync({ winMessage: undefined, gameover: false });
-                await this.update();
-            }}>Reset</button>
+            <Button 
+                key={3}
+                className='reset-button'
+                onClick={async () => {
+                    this.gameLogic.reset();
+                    await this.setStateAsync({ winMessage: undefined, gameover: false });
+                    await this.update();
+                }}
+            >
+                Reset
+            </Button>
         )
     }
 
@@ -248,4 +282,6 @@ export default class GameComponent<TMove> extends React.Component<GameProps, Gam
     renderChild(): JSX.Element {
         throw new Error('Method `renderChild` not implemented')
     }
+
+    // ===================================================================
 }

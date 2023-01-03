@@ -8,6 +8,23 @@
             text-decoration: none;
             font-size: large;
         }
+
+        .divider {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .empty-tab {
+            display: none !important;
+            position: absolute;
+            z-index: -999;
+        }
+
+        #max-score-input {
+            margin: 1;
+            margin-top: 0;
+            max-width: 12ch;
+        }
     }
 
     .component {

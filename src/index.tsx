@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 // MUI themes
 import {
     ThemeProvider,
+    StyledEngineProvider,
     createTheme,
     Theme
 } from '@mui/material/styles';
@@ -32,7 +33,9 @@ root.render(
     <React.StrictMode>
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <Routing />
+            <StyledEngineProvider injectFirst>
+                <Routing />
+            </StyledEngineProvider>
         </ThemeProvider>
     </React.StrictMode>
 );

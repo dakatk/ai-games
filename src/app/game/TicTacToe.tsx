@@ -1,3 +1,6 @@
+// Basic React stuff
+import React from 'react';
+
 // MUI components
 import Grid from '@mui/material/Grid';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -17,9 +20,15 @@ import './TicTacToe.scss'
  * Tic-Tac-Toe (Naughts and Crosses) game w/ AI
  */
 export default class TicTacToe extends GameComponent<Move> {
+
+    // ====================== Initialization =============================
+
     constructor(props: GameProps) {
         super(props, new TicTacToeLogic())
+        
     }
+
+    // ====================== Component rendering ========================
 
     renderChild() {
         return this.renderBoard();
@@ -55,17 +64,35 @@ export default class TicTacToe extends GameComponent<Move> {
      * Render cell at (`rowIndex`, `colIndex`)
      */
     private renderCell(rowIndex: number, colIndex: number): JSX.Element {
+        // Middle column has vertical borders
         let className: string = (colIndex === 1) ? 'cell vert' : 'cell';
+        // Disable `onClick` event by default
+        let onClick: React.MouseEventHandler<HTMLDivElement> | undefined = undefined;
+
+        // Middle row has horizontal and vertical borders
         if (rowIndex === 1) {
             className += ' horiz';
+        }
+
+        if (this.state.board !== undefined) {
+            const pieceValue = this.state.board[rowIndex][colIndex];
+
+            if (pieceValue === 0) {
+                // If space is empty, enable `onClick` event
+                onClick = async () => await this.onMove([rowIndex, colIndex]);
+            } else {
+                // Otherwise, mark space as 'occupied'
+                className += ' occupied';
+            }
         }
 
         return (
             <Grid item
                 key={colIndex}
                 className={className}
-                onClick={() => this.onMove([rowIndex, colIndex])}
-            > {this.renderPiece(rowIndex, colIndex)}
+                onClick={onClick}
+            >
+                {this.renderPiece(rowIndex, colIndex)}
             </Grid>
         );
     }
@@ -77,6 +104,7 @@ export default class TicTacToe extends GameComponent<Move> {
         if (this.state.board === undefined) {
             return undefined;
         }
+        
         const pieceValue = this.state.board[row][col];
 
         switch (pieceValue) {
@@ -90,4 +118,6 @@ export default class TicTacToe extends GameComponent<Move> {
                 return undefined;
         }
     }
+
+    // ===================================================================
 }
