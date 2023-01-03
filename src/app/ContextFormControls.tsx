@@ -58,13 +58,13 @@ export default class ContextFormControls extends React.Component<ContextFormProp
         [AiType.NEGAMAX]: [
             {
                 contextKey: 'searchDepth',
-                label: 'Max Search Depth'
+                label: 'Search Depth'
             }
         ],
         [AiType.MENACE]: [
             {
                 contextKey: 'defaultBeads',
-                label: 'Default Bead Count'
+                label: 'Bead Count'
             }
         ],
     };
@@ -147,6 +147,7 @@ export default class ContextFormControls extends React.Component<ContextFormProp
                     
                     <TextField
                         id='max-score-input'
+                        className='form-number-field'
                         label='Max Score'
                         type='number'
                         InputLabelProps={{
@@ -170,7 +171,9 @@ export default class ContextFormControls extends React.Component<ContextFormProp
     private renderGenericFormControls(formControls: Array<GenericFormControl>): JSX.Element[] {
         return formControls.map((formControl: GenericFormControl) => (
             <TextField
+                key={formControl.contextKey}
                 id={formControl.label.toLowerCase().split(' ').join('-')}
+                className='form-number-field'
                 label={formControl.label}
                 type='number'
                 InputLabelProps={{

@@ -1,29 +1,40 @@
 .parent {
     .menu {
         display: block;
+
+        .menu-bar {
+            padding-left: 1.05em;
+            padding-right: 1.05em;
         
-        .anchor {
-            color: #eee;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: large;
-        }
+            .anchor {
+                color: #eee;
+                font-weight: bold;
+                text-decoration: none;
+                font-size: large;
 
-        .divider {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-        }
+                .home-icon {
+                    margin-top: 0.3em;
+                    font-size: 1.7rem;
+                }
+            }
 
-        .empty-tab {
-            display: none !important;
-            position: absolute;
-            z-index: -999;
-        }
+            .divider {
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+            }
 
-        #max-score-input {
-            margin: 1;
-            margin-top: 0;
-            max-width: 12ch;
+            .empty-tab {
+                display: none !important;
+                position: absolute;
+                z-index: -999;
+            }
+
+            .settings-icon {
+                font-size: 2rem;
+                margin-left: auto;
+                order: 2;
+                cursor: pointer;
+            }
         }
     }
 

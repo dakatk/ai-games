@@ -16,6 +16,10 @@ import Divider from '@mui/material/Divider';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+// MUI icons
+import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 // App context
 import { AppContext, AppContextData } from './AppContext';
 
@@ -118,10 +122,10 @@ export default class App extends AsyncComponent<any, AppState> {
             <Box className='parent'>
                 <Box className='menu'>
                     <AppBar component='nav'>
-                        <Toolbar>
+                        <Toolbar className='menu-bar'>
                             {this.renderAnchor()}
 
-                            <Divider 
+                            <Divider
                                 flexItem
                                 className='divider'
                                 orientation='vertical'
@@ -134,15 +138,24 @@ export default class App extends AsyncComponent<any, AppState> {
                                 flexItem
                                 className='divider'
                                 orientation='vertical' 
-                                sx={{ mr: '1.5em', ml: '1em' }}
+                                sx={{ mr: '1.6em', ml: '1em' }}
                             />
 
-                            <ContextFormControls 
+                            <ContextFormControls
                                 context={this.state.context || DEFAULT_CONTEXT}
                                 updateContext={async (context: AppContextData) => {
                                     await this.setStateAsync({ context }); 
                                 }}
                             />
+
+                            <Divider
+                                flexItem
+                                className='divider'
+                                orientation='vertical' 
+                                sx={{ ml: '1.1em' }}
+                            />
+
+                            <SettingsIcon className='settings-icon' />
                         </Toolbar>
                     </AppBar>
                 </Box>
@@ -165,9 +178,9 @@ export default class App extends AsyncComponent<any, AppState> {
                 to='/'
                 component={RouterLink}
                 className='anchor'
-                sx={{ mr: '1.5em', display: { xs: 'none', sm: 'block' } }}
+                sx={{ mr: '1em', display: { xs: 'none', sm: 'block' } }}
             >
-                Home
+                <HomeIcon className='home-icon' />
             </Typography>
         );
     }
