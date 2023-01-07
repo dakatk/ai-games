@@ -5,7 +5,13 @@ import React from 'react';
 import AsyncComponent from './AsyncComponent';
 
 // React router components
-import { Link as RouterLink, Location, NavigateFunction, Outlet, Params } from 'react-router-dom';
+import { 
+    Link as RouterLink,
+    Location,
+    NavigateFunction,
+    Outlet,
+    Params
+} from 'react-router-dom';
 
 // MUI components
 import AppBar from '@mui/material/AppBar';
@@ -22,6 +28,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 // Other components
 import ContextFormControls from './ContextFormControls';
+import SettingsMenu from './SettingsMenu';
 
 // App context
 import { AppContext, AppContextData, DEFAULT_CONTEXT } from './AppContext';
@@ -78,6 +85,10 @@ interface AppState {
      * Context for child components
      */
     context?: AppContextData;
+    /**
+     * Controls whether or not the settings menu is open
+     */
+    modalOpen?: boolean;
 }
 
 /**
@@ -110,7 +121,8 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
 
         this.state = {
             tab: tabName,
-            context: DEFAULT_CONTEXT
+            context: DEFAULT_CONTEXT,
+            modalOpen: false
         };
     }
 
@@ -130,6 +142,22 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
         await this.setStateAsync({ context });
     }
 
+    /**
+     * Settings button onClick handler (opens modal)
+     */
+    private settingsModalOpen() {
+        this.setState({ modalOpen: true });
+    }
+
+    /**
+     * Settings modal onClose handler
+     */
+    private settingsModalClose() {
+        this.setState({ modalOpen: false }, () => {
+            console.log('Modal closed');
+        });
+    }
+
     // ====================== React callback overrides ===================
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
@@ -142,6 +170,11 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
     render() {
         return (
             <Box className='parent'>
+                <SettingsMenu 
+                    open={this.state.modalOpen as boolean} 
+                    onClose={() => this.settingsModalClose()}
+                />
+
                 <Box className='menu'>
                     <AppBar component='nav'>
                         <Toolbar className='menu-bar'>
@@ -175,7 +208,10 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
                                 sx={{ ml: '1.1em' }}
                             />
 
-                            <SettingsIcon className='settings-icon' />
+                            <SettingsIcon 
+                                className='settings-icon' 
+                                onClick={() => this.settingsModalOpen()}
+                            />
                         </Toolbar>
                     </AppBar>
                 </Box>
