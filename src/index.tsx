@@ -30,12 +30,10 @@ const darkTheme: Theme = createTheme({
 });
 
 root.render(
-    <React.StrictMode>
-        <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <StyledEngineProvider injectFirst>
-                <Routing />
-            </StyledEngineProvider>
-        </ThemeProvider>
-    </React.StrictMode>
+    <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <StyledEngineProvider injectFirst>
+            <Routing />
+        </StyledEngineProvider>
+    </ThemeProvider>
 );

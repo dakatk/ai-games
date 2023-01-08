@@ -180,6 +180,9 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
         this.updateAiFromContext();
     }
 
+    /**
+     * Update AI from value passed in through app context
+     */
     private updateAiFromContext() {
         if (!this.context || !this.contextIsDirty()) {
             return;

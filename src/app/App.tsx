@@ -35,6 +35,7 @@ import { AppContext, AppContextData, DEFAULT_CONTEXT } from './AppContext';
 
 // Stylesheet
 import './App.scss'
+import AiType from './ai/AiType';
 
 /** 
  * Data for menu nav items
@@ -131,7 +132,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
     /**
      * Update selected tab name in component state
      */
-    private async handleTabChange(_: React.SyntheticEvent, tab: string) {
+    private async handleTabChange(tab: string) {
         await this.setStateAsync({ tab });
     }
 
@@ -153,9 +154,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
      * Settings modal onClose handler
      */
     private settingsModalClose() {
-        this.setState({ modalOpen: false }, () => {
-            console.log('Modal closed');
-        });
+        this.setState({ modalOpen: false });
     }
 
     // ====================== React callback overrides ===================
@@ -171,8 +170,11 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
         return (
             <Box className='parent'>
                 <SettingsMenu 
-                    open={this.state.modalOpen as boolean} 
+                    open={this.state.modalOpen as boolean}
+                    aiType={this.state.context?.aiType || AiType.MENACE}
                     onClose={() => this.settingsModalClose()}
+                    onSave={() => {console.log('Save')}}
+                    onLoad={() => {console.log('Load')}}
                 />
 
                 <Box className='menu'>
@@ -198,7 +200,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
 
                             <ContextFormControls
                                 context={this.state.context || DEFAULT_CONTEXT}
-                                updateContext={this.updateAppContext}
+                                updateContext={(context: AppContextData) => this.updateAppContext(context)}
                             />
 
                             <Divider
@@ -248,7 +250,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
         return (
             <Tabs 
                 value={this.state.tab}
-                onChange={this.handleTabChange}
+                onChange={(_: React.SyntheticEvent, tab: string) => this.handleTabChange(tab)}
                 aria-label='menu nav items'
             >
                 <Tab value='' label='' className='empty-tab' disabled component='div' />

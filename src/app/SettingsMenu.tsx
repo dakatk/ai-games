@@ -6,6 +6,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import ClearIcon from '@mui/icons-material/Clear';
+import Button from '@mui/material/Button';
+
+// AI types
+import AiType from './ai/AiType';
+
+// String functions (util)
+import { capitalize } from '../util/String';
 
 // Stylesheet
 import './SettingsMenu.scss';
@@ -22,11 +29,35 @@ const style = {
     p: 4,
 };
 
+/**
+ * Settings menu component props
+ */
 interface SettingsMenuProps {
+    /**
+     * Modal open flag
+     */
     open: boolean;
+    /**
+     * AI type selected from context menu
+     */
+    aiType: AiType;
+    /**
+     * Modal `onClose` event handler
+     */
     onClose: () => void;
+    /**
+     * Save button `onClick` handler
+     */
+    onSave: () => void;
+    /**
+     * Load button `onClick` handler
+     */
+    onLoad: () => void;
 }
 
+/**
+ * Settings menu component
+ */
 export default class SettingsMenu extends React.Component<SettingsMenuProps> {
     render() {
         return (
@@ -34,20 +65,37 @@ export default class SettingsMenu extends React.Component<SettingsMenuProps> {
                 <Modal
                     open={this.props.open}
                     onClose={() => this.props.onClose()}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
+                    aria-labelledby='modal-title'
+                    aria-describedby='modal-description'
                 >
                     <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Text in a modal
+                        <Typography id='modal-title' variant='h6' component='h2'>
+                            Settings ({capitalize(this.props.aiType)})
                             <ClearIcon 
-                                className="close-button" 
+                                className='close-button' 
                                 onClick={() => this.props.onClose()} 
                             />
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                        </Typography>
+                        <Box 
+                            id='modal-description' 
+                            sx={{ mt: 2, alignItems: 'center' }}
+                            display='flex'
+                            justifyContent='center'
+                            alignItems='center'
+                        >
+                            <Button 
+                                className='settings-button'
+                                onClick={() => this.props.onSave()}
+                            >
+                                Save
+                            </Button>
+                            <Button 
+                                className='settings-button'
+                                onClick={() => this.props.onLoad()}
+                            >
+                                Load
+                            </Button>
+                        </Box>
                     </Box>
                 </Modal>
             </div>

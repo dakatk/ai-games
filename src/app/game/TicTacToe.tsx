@@ -14,7 +14,7 @@ import TicTacToeLogic, { Move } from './logic/TicTacToe';
 import { Player } from './logic/GameLogic';
 
 // Stylesheet
-import './TicTacToe.scss'
+import './TicTacToe.scss';
 
 /**
  * Tic-Tac-Toe (Naughts and Crosses) game w/ AI
@@ -25,7 +25,6 @@ export default class TicTacToe extends GameComponent<Move> {
 
     constructor(props: GameProps) {
         super(props, new TicTacToeLogic())
-        
     }
 
     // ====================== Component rendering ========================

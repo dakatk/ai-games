@@ -70,9 +70,10 @@ export default class ContextFormControls extends React.Component<ContextFormProp
     };
 
     /**
+     * Updates parent app context at `contextKey` with `value`
      * 
-     * @param contextKey 
-     * @param value 
+     * @param contextKey App context key
+     * @param value Value
      */
     private async updateAppContext(contextKey: string, value: any) {
         let context: AppContextData = {
@@ -144,21 +145,6 @@ export default class ContextFormControls extends React.Component<ContextFormProp
                             </MenuItem>
                         ))}
                     </Select>
-                    
-                    <TextField
-                        id='max-score-input'
-                        className='form-number-field'
-                        label='Max Score'
-                        type='number'
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        onChange={async (e) => (
-                            await this.handleNumericFieldChange(e, 'maxScore')
-                        )}
-                        variant='standard'
-                        sx={{ m: 1, mt: 0 }}
-                    />
 
                     {this.renderGenericFormControls(
                         this.aiFormControls[this.props.context.aiType as AiType]
