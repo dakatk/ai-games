@@ -703,7 +703,7 @@ export class Chess {
 
     /* don't let the user place more than one king */
     if (
-      type == KING &&
+      type === KING &&
       !(this._kings[color] === EMPTY || this._kings[color] === sq)
     ) {
       return false
@@ -1618,7 +1618,7 @@ export class Chess {
     }
 
     function fromHex(s: string): string {
-      return s.length == 0
+      return s.length === 0
         ? ''
         : decodeURIComponent('%' + (s.match(/.{1,2}/g) || []).join('%'))
     }
@@ -1818,7 +1818,7 @@ export class Chess {
       to = matches[3] as Square
       promotion = matches[4]
 
-      if (from.length == 1) {
+      if (from.length === 1) {
         overlyDisambiguated = true
       }
     } else {
@@ -1836,7 +1836,7 @@ export class Chess {
         to = matches[3] as Square
         promotion = matches[4]
 
-        if (from.length == 1) {
+        if (from.length === 1) {
           overlyDisambiguated = true
         }
       }
@@ -1853,10 +1853,10 @@ export class Chess {
         // hand-compare move properties with the results from our sloppy
         // regex
         if (
-          (!piece || piece.toLowerCase() == moves[i].piece) &&
-          Ox88[from] == moves[i].from &&
-          Ox88[to] == moves[i].to &&
-          (!promotion || promotion.toLowerCase() == moves[i].promotion)
+          (!piece || piece.toLowerCase() === moves[i].piece) &&
+          Ox88[from] === moves[i].from &&
+          Ox88[to] === moves[i].to &&
+          (!promotion || promotion.toLowerCase() === moves[i].promotion)
         ) {
           return moves[i]
         } else if (overlyDisambiguated) {
@@ -1866,10 +1866,10 @@ export class Chess {
 
           const square = algebraic(moves[i].from)
           if (
-            (!piece || piece.toLowerCase() == moves[i].piece) &&
-            Ox88[to] == moves[i].to &&
-            (from == square[0] || from == square[1]) &&
-            (!promotion || promotion.toLowerCase() == moves[i].promotion)
+            (!piece || piece.toLowerCase() === moves[i].piece) &&
+            Ox88[to] === moves[i].to &&
+            (from === square[0] || from === square[1]) &&
+            (!promotion || promotion.toLowerCase() === moves[i].promotion)
           ) {
             return moves[i]
           }

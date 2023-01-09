@@ -9,7 +9,7 @@ import GameComponent, { GameProps } from './GameComponent';
 
 // Game logic
 import ChessLogic from './logic/Chess';
-import { Player } from './logic/GameLogic';
+// import { Player } from './logic/GameLogic';
 
 // Chess library
 import { Move } from '../../lib/chess';
