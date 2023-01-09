@@ -6,6 +6,7 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
+    Navigate
 } from 'react-router-dom';
 
 // React router hooks
@@ -68,8 +69,9 @@ export default class Routing extends React.Component {
         return (
             <Router>
                 <Routes>
-                    {this.nestedRoutes('/')}
+                    {/* {this.nestedRoutes('/')} */}
                     {this.nestedRoutes('/ai-games')}
+                    <Route path='/' element={<Navigate replace to='/ai-games' />} />
                 </Routes>
             </Router>
         )

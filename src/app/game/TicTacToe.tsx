@@ -64,7 +64,7 @@ export default class TicTacToe extends GameComponent<Move> {
      */
     private renderCell(rowIndex: number, colIndex: number): JSX.Element {
         // Middle column has vertical borders
-        let className: string = (colIndex === 1) ? 'cell vert' : 'cell';
+        let className: string = (colIndex === 1) ? 'tictactoe-cell vert' : 'tictactoe-cell';
         // Disable `onClick` event by default
         let onClick: React.MouseEventHandler<HTMLDivElement> | undefined = undefined;
 
@@ -108,10 +108,10 @@ export default class TicTacToe extends GameComponent<Move> {
 
         switch (pieceValue) {
             case Player.HUMAN:
-                return <ClearIcon className='piece' />;
+                return <ClearIcon className='tictactoe-piece' />;
 
             case Player.CPU:
-                return <PanoramaFishEyeIcon className='piece' />;
+                return <PanoramaFishEyeIcon className='tictactoe-piece' />;
 
             default:
                 return undefined;

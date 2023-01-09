@@ -30,12 +30,18 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ContextFormControls from './ContextFormControls';
 import SettingsMenu from './SettingsMenu';
 
+// AI types
+import AiType from './ai/AiType';
+
 // App context
-import { AppContext, AppContextData, DEFAULT_CONTEXT } from './AppContext';
+import { 
+    AppContext,
+    AppContextData,
+    DEFAULT_CONTEXT
+} from './AppContext';
 
 // Stylesheet
 import './App.scss'
-import AiType from './ai/AiType';
 
 /** 
  * Data for menu nav items
@@ -97,15 +103,16 @@ interface AppState {
  * renders the respective component for any given route
  */
 export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
+    // TODO Move to JSON files?
     // Menu navigation items
     private static navItems: Array<NavItem> = [
         {
             friendlyName: 'Tic-Tac-Toe',
-            path: '/tictactoe'
+            path: '/ai-games/tictactoe'
         },
         {
             friendlyName: 'Chess',
-            path: '/chess'
+            path: '/ai-games/chess'
         }
     ];
 
@@ -117,8 +124,10 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
         // Determine which tab to show as selected from
         // the `pathname` of the current location (reported via React Router)
         const path: string = props.router.location.pathname;
-        const tab: NavItem | undefined = App.navItems.find((navItem: NavItem) => navItem.path === path);
-        const tabName: string = tab?.friendlyName || '';
+        const tab: NavItem | undefined = App.navItems.find(
+            (navItem: NavItem) => navItem.path === path
+        );
+        const tabName: string | undefined = tab?.friendlyName;
 
         this.state = {
             tab: tabName,
@@ -198,6 +207,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
                                 sx={{ mr: '1.6em', ml: '1em' }}
                             />
 
+                            {/* TODO Move to settings menu */}
                             <ContextFormControls
                                 context={this.state.context || DEFAULT_CONTEXT}
                                 updateContext={(context: AppContextData) => this.updateAppContext(context)}
@@ -249,7 +259,7 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
     private renderNavItems(): JSX.Element {
         return (
             <Tabs 
-                value={this.state.tab}
+                value={this.state.tab || false}
                 onChange={(_: React.SyntheticEvent, tab: string) => this.handleTabChange(tab)}
                 aria-label='menu nav items'
             >

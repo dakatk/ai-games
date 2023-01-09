@@ -14,7 +14,7 @@ export default class Home extends React.Component {
     render() {
         return (
             <Box className='welcome-text'>
-                Check out the various AIs I've developed in a number of different games
+                Check out the various AIs I've developed by playing against them in a number of different games
             </Box>
         );
     }

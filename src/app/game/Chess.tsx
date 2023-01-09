@@ -3,8 +3,6 @@ import React from 'react';
 
 // MUI components
 import Grid from '@mui/material/Grid';
-import ClearIcon from '@mui/icons-material/Clear';
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
 // Parent component
 import GameComponent, { GameProps } from './GameComponent';
@@ -18,6 +16,14 @@ import { Move } from '../../lib/chess';
 
 // Stylesheet
 import './Chess.scss'
+
+// Alternte between light and dark
+// (mod 2 representation)
+const cellClassNames: Array<string> = [
+    'chess-piece-light', 
+    'chess-piece-dark', 
+    'chess-piece-light'
+];
 
 /**
  * Chess game w/ AI
@@ -56,7 +62,11 @@ export default class Chess extends GameComponent<Move | string> {
      */
     private renderRow(row: Array<number>, rowIndex: number): JSX.Element {
         return (
-            <Grid container justifyContent='center' alignItems='center'>
+            <Grid 
+                container
+                justifyContent='center'
+                alignItems='center'
+            >
                 {row.map((_, j) => this.renderCell(rowIndex, j))}
             </Grid>
         );
@@ -66,27 +76,11 @@ export default class Chess extends GameComponent<Move | string> {
      * Render cell at (`rowIndex`, `colIndex`)
      */
     private renderCell(rowIndex: number, colIndex: number): JSX.Element {
-        // Middle column has vertical borders
-        let className: string = (colIndex === 1) ? 'cell vert' : 'cell';
+        // Even squares are dark, odd squares are light
+        const cellIndexMod: number = (rowIndex % 2) + (colIndex % 2);
+        const className: string = `chess-cell ${cellClassNames[cellIndexMod]}`;
         // Disable `onClick` event by default
         let onClick: React.MouseEventHandler<HTMLDivElement> | undefined = undefined;
-
-        // Middle row has horizontal and vertical borders
-        if (rowIndex === 1) {
-            className += ' horiz';
-        }
-
-        if (this.state.board !== undefined) {
-            const pieceValue = this.state.board[rowIndex][colIndex];
-
-            if (pieceValue === 0) {
-                // If space is empty, enable `onClick` event
-                onClick = async () => await this.onMove(''); // FIXME
-            } else {
-                // Otherwise, mark space as 'occupied'
-                className += ' occupied';
-            }
-        }
 
         return (
             <Grid item
@@ -94,7 +88,6 @@ export default class Chess extends GameComponent<Move | string> {
                 className={className}
                 onClick={onClick}
             >
-                {this.renderPiece(rowIndex, colIndex)}
             </Grid>
         );
     }
@@ -102,24 +95,24 @@ export default class Chess extends GameComponent<Move | string> {
     /**
      * Render piece for cell (`row`, `col`)
      */
-    private renderPiece(row: number, col: number): JSX.Element | undefined {
-        if (this.state.board === undefined) {
-            return undefined;
-        }
+    // private renderPiece(row: number, col: number): JSX.Element | undefined {
+    //     if (this.state.board === undefined) {
+    //         return undefined;
+    //     }
         
-        const pieceValue = this.state.board[row][col];
+    //     const pieceValue = this.state.board[row][col];
 
-        switch (pieceValue) {
-            case Player.HUMAN:
-                return <ClearIcon className='piece' />;
+    //     switch (pieceValue) {
+    //         case Player.HUMAN:
+    //             return <ClearIcon className='piece' />;
 
-            case Player.CPU:
-                return <PanoramaFishEyeIcon className='piece' />;
+    //         case Player.CPU:
+    //             return <PanoramaFishEyeIcon className='piece' />;
 
-            default:
-                return undefined;
-        }
-    }
+    //         default:
+    //             return undefined;
+    //     }
+    // }
 
     // ===================================================================
 }

@@ -221,19 +221,30 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
 
     render() {
         return (
-            <Grid
-                container
-                spacing={0}
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-                style={{ minHeight: '100vh' }}
-            >
+            <div style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                maxWidth: 'fit-content',
+                height: '100%',
+                margin: 0,
+                verticalAlign: 'middle'
+            }}>
                 {this.renderGame()}
-            </Grid>
+            </div>
         );
     }
+    
+    /**
+     * Render callback for child class (must be overriden)
+     */
+    renderChild(): JSX.Element {
+        throw new Error('Method `renderChild` not implemented')
+    }
 
+    /**
+     * Renders all components needed for gameplay
+     */
     private renderGame(): JSX.Element | JSX.Element[] {
         if (this.state.error) {
             return this.renderErrorMessage();
@@ -265,6 +276,7 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
      */
     private renderResetButton(): JSX.Element {
         return (
+            <div key={3}>
             <Button 
                 key={3}
                 className='reset-button'
@@ -276,14 +288,8 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
             >
                 Reset
             </Button>
+            </div>
         )
-    }
-
-    /**
-     * Render callback for child class (must be overriden)
-     */
-    renderChild(): JSX.Element {
-        throw new Error('Method `renderChild` not implemented')
     }
 
     // ===================================================================
