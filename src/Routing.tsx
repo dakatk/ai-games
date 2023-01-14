@@ -18,7 +18,7 @@ import {
 
 // App components
 import App from './app/App';
-import Home from './app/Home';
+import About from './app/About';
 import TicTacToe from './app/game/TicTacToe';
 import Chess from './app/game/Chess';
 import NotFound from './app/NotFound';
@@ -57,7 +57,7 @@ export default class Routing extends React.Component {
     nestedRoutes(homePath: string) {
         return (
             <Route path={homePath} element={<AppComponent />}>
-                <Route path='' element={<Home />} />
+                <Route path='' element={<About />} />
                 <Route path='tictactoe' element={<TicTacToe searchDepth={10} />} />
                 <Route path='chess' element={<Chess searchDepth={4} />} />
                 <Route path="*" element={<NotFound />} />

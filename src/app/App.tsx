@@ -27,7 +27,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 // Other components
-import ContextFormControls from './ContextFormControls';
 import SettingsMenu from './SettingsMenu';
 
 // AI types
@@ -181,9 +180,11 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
                 <SettingsMenu 
                     open={this.state.modalOpen as boolean}
                     aiType={this.state.context?.aiType || AiType.MENACE}
+                    appContext={this.state.context || DEFAULT_CONTEXT}
+                    updateAppContext={(context: AppContextData) => this.updateAppContext(context)}
                     onClose={() => this.settingsModalClose()}
-                    onSave={() => {console.log('Save')}}
-                    onLoad={() => {console.log('Load')}}
+                    onSave={() => {console.log('Save')}} // TODO Implement
+                    onLoad={() => {console.log('Load')}} // TODO Implement
                 />
 
                 <Box className='menu'>
@@ -204,23 +205,10 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
                                 flexItem
                                 className='divider'
                                 orientation='vertical' 
-                                sx={{ mr: '1.6em', ml: '1em' }}
+                                sx={{ ml: '1em' }}
                             />
 
-                            {/* TODO Move to settings menu */}
-                            <ContextFormControls
-                                context={this.state.context || DEFAULT_CONTEXT}
-                                updateContext={(context: AppContextData) => this.updateAppContext(context)}
-                            />
-
-                            <Divider
-                                flexItem
-                                className='divider'
-                                orientation='vertical' 
-                                sx={{ ml: '1.1em' }}
-                            />
-
-                            <SettingsIcon 
+                            <SettingsIcon
                                 className='settings-icon' 
                                 onClick={() => this.settingsModalOpen()}
                             />
@@ -243,7 +231,8 @@ export default class App extends AsyncComponent<AppWithRouterProps, AppState> {
     private renderAnchor(): JSX.Element {
         return (
             <Typography
-                to='/'
+                to='/ai-games'
+                title='Home'
                 component={RouterLink}
                 className='anchor'
                 sx={{ mr: '1em', display: { xs: 'none', sm: 'block' } }}

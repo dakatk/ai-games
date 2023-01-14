@@ -8,14 +8,21 @@ import Modal from '@mui/material/Modal';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 
+// Other components
+import ContextFormControls from './ContextFormControls';
+
 // AI types
 import AiType from './ai/AiType';
+
+// App context
+import { AppContextData } from './AppContext';
 
 // String functions (util)
 import { capitalize } from '../util/String';
 
 // Stylesheet
 import './SettingsMenu.scss';
+import { Divider } from '@mui/material';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -42,6 +49,14 @@ interface SettingsMenuProps {
      */
     aiType: AiType;
     /**
+     * App context
+     */
+    appContext: AppContextData;
+    /**
+     * Callback to update the app context
+     */
+    updateAppContext: (context: AppContextData) => Promise<void>;
+    /**
      * Modal `onClose` event handler
      */
     onClose: () => void;
@@ -59,6 +74,21 @@ interface SettingsMenuProps {
  * Settings menu component
  */
 export default class SettingsMenu extends React.Component<SettingsMenuProps> {
+
+    // ====================== Event handlers =============================
+
+    private async onReset() {
+        // Update 'dirty' flag (doesn't matter if it's 'true' or 'false', 
+        // as long as it's inverted from it's previous value)
+        const dirty: boolean = !this.props.appContext.dirty;
+        await this.props.updateAppContext({ ...this.props.appContext, dirty });
+
+        // Close the settings modal
+        this.props.onClose();
+    }
+
+    // ====================== Component rendering ========================
+
     render() {
         return (
             <div>
@@ -83,22 +113,50 @@ export default class SettingsMenu extends React.Component<SettingsMenuProps> {
                             justifyContent='center'
                             alignItems='center'
                         >
-                            <Button 
-                                className='settings-button'
-                                onClick={() => this.props.onSave()}
-                            >
-                                Save
-                            </Button>
-                            <Button 
-                                className='settings-button'
-                                onClick={() => this.props.onLoad()}
-                            >
-                                Load
-                            </Button>
+                            <Box>
+                                <ContextFormControls
+                                    context={this.props.appContext}
+                                    updateContext={(context: AppContextData) => this.props.updateAppContext(context)}
+                                />
+                                
+                                <Divider
+                                    sx={{ mt: '0.8em', mb: '0.5em', w: '100%', ml: -5, mr: -5 }}
+                                />
+
+                                {this.renderButtons()}
+                            </Box>
                         </Box>
                     </Box>
                 </Modal>
             </div>
         )
     }
+
+    /**
+     * Renders 'Save', 'Load', and 'Reset' buttons
+     */
+    private renderButtons(): JSX.Element[] {
+        return [
+            <Button 
+                className='settings-button'
+                onClick={() => this.props.onSave()}
+            >
+                Save
+            </Button>,
+            <Button 
+                className='settings-button'
+                onClick={() => this.props.onLoad()}
+            >
+                Load
+            </Button>,
+            <Button 
+                className='settings-button'
+                onClick={async () => await this.onReset()}
+            >
+                Reset
+            </Button>
+]
+    }
+
+    // ===================================================================
 }

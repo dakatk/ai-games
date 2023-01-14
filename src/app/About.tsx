@@ -5,12 +5,12 @@ import React from 'react';
 import Box from '@mui/material/Box';
 
 // Stylesheet
-import './Home.scss';
+import './About.scss';
 
 /**
- * Home/Welcome page
+ * About/Welcome page
  */
-export default class Home extends React.Component {
+export default class About extends React.Component {
     render() {
         return (
             <Box className='welcome-text'>

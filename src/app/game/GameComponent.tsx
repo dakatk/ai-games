@@ -6,8 +6,7 @@ import AsyncComponent from '../AsyncComponent';
 
 // MUI components
 import Box from '@mui/material/Box';
-// import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 
 // App context
 import { AppContext, AppContextData } from '../AppContext';
@@ -219,18 +218,20 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
 
     // ====================== Component rendering ========================
 
+    // FIXME Bottom margin/padding is off, probably a flex issue
     render() {
         return (
-            <div style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100vh',
-                maxWidth: 'fit-content',
-                height: '100%',
-                margin: 0,
-                verticalAlign: 'middle'
-            }}>
-                {this.renderGame()}
+            <div style={{ maxWidth: '41em', maxHeight: '45em', border: '2px solid black', paddingBottom: '1.5em' }}>
+                <Grid
+                    container
+                    spacing={0}
+                    direction='column'
+                    alignItems='center'
+                    justifyContent='center'
+                    style={{ minHeight: '36em', maxHeight: '40em' }}
+                >
+                    {this.renderGame()}
+                </Grid>
             </div>
         );
     }
@@ -251,8 +252,8 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
         } else {
             return [
                 this.renderWinMessage(),
-                <div key={2}>{this.renderChild()}</div>,
-                this.renderResetButton()
+                <Box key={2}>{this.renderChild()}</Box>,
+                <Box key={3} className='game-padding'></Box>
             ];
         }
     }
@@ -269,27 +270,6 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
      */
     private renderWinMessage(): JSX.Element {
         return <Box key={1} className='win-message'>{this.state.winMessage}</Box>
-    }
-
-    /**
-     * Button that resets the game to its initial state
-     */
-    private renderResetButton(): JSX.Element {
-        return (
-            <div key={3}>
-            <Button 
-                key={3}
-                className='reset-button'
-                onClick={async () => {
-                    this.gameLogic.reset();
-                    await this.setStateAsync({ winMessage: undefined, gameover: false });
-                    await this.update();
-                }}
-            >
-                Reset
-            </Button>
-            </div>
-        )
     }
 
     // ===================================================================
