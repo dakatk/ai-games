@@ -107,8 +107,8 @@ export default class SettingsMenu extends React.Component<SettingsMenuProps> {
                             />
                         </Typography>
                         <Box 
-                            id='modal-description' 
-                            sx={{ mt: 2, alignItems: 'center' }}
+                            id='modal-description'
+                            sx={{ mt: 4, alignItems: 'center' }}
                             display='flex'
                             justifyContent='center'
                             alignItems='center'
@@ -120,7 +120,7 @@ export default class SettingsMenu extends React.Component<SettingsMenuProps> {
                                 />
                                 
                                 <Divider
-                                    sx={{ mt: '0.8em', mb: '0.5em', w: '100%', ml: -5, mr: -5 }}
+                                    sx={{ mt: '1em', mb: '0.8em', w: '100%', ml: -5, mr: -5 }}
                                 />
 
                                 {this.renderButtons()}
@@ -137,19 +137,22 @@ export default class SettingsMenu extends React.Component<SettingsMenuProps> {
      */
     private renderButtons(): JSX.Element[] {
         return [
-            <Button 
+            <Button
+                key={0}
                 className='settings-button'
                 onClick={() => this.props.onSave()}
             >
                 Save
             </Button>,
-            <Button 
+            <Button
+                key={1}
                 className='settings-button'
                 onClick={() => this.props.onLoad()}
             >
                 Load
             </Button>,
-            <Button 
+            <Button
+                key={2}
                 className='settings-button'
                 onClick={async () => await this.onReset()}
             >

@@ -14,11 +14,42 @@ import ChessLogic from './logic/Chess';
 // Chess library
 import { Move } from '../../lib/chess';
 
-// Chess pieces image
-import ChessPieces from '../../resources/chess_pieces.png';
+// Chess piece images
+import WhitePawn from '../../resources/white_pawn.png';
+import WhiteRook from '../../resources/white_rook.png';
+import WhiteKnight from '../../resources/white_knight.png';
+import WhiteBishop from '../../resources/white_bishop.png';
+import WhiteQueen from '../../resources/white_queen.png';
+import WhiteKing from '../../resources/white_king.png';
+import BlackPawn from '../../resources/black_pawn.png';
+import BlackRook from '../../resources/black_rook.png';
+import BlackKnight from '../../resources/black_knight.png';
+import BlackBishop from '../../resources/black_bishop.png';
+import BlackQueen from '../../resources/black_queen.png';
+import BlackKing from '../../resources/black_king.png';
 
 // Stylesheet
 import './Chess.scss'
+
+// Image source paths for pieces by color and type
+const imageSrcForPiece: Record<string, Record<string, string>> = {
+    'w': {
+        'p': WhitePawn,
+        'r': WhiteRook,
+        'n': WhiteKnight,
+        'b': WhiteBishop,
+        'q': WhiteQueen,
+        'k': WhiteKing
+    },
+    'b': {
+        'p': BlackPawn,
+        'r': BlackRook,
+        'n': BlackKnight,
+        'b': BlackBishop,
+        'q': BlackQueen,
+        'k': BlackKing
+    }
+}
 
 // Alternte between light and dark
 // (mod 2 representation)
@@ -38,6 +69,10 @@ export default class Chess extends GameComponent<Move | string> {
     constructor(props: GameProps) {
         super(props, new ChessLogic());
     }
+
+    // ====================== Event handlers =============================
+
+    // TODO Overridw `onMove` for chess rules
 
     // ====================== Component rendering ========================
 
@@ -63,14 +98,14 @@ export default class Chess extends GameComponent<Move | string> {
     /**
      * Render single row of board at `rowIndex`
      */
-    private renderRow(row: Array<number>, rowIndex: number): JSX.Element {
+    private renderRow(row: Array<any>, rowIndex: number): JSX.Element {
         return (
             <Grid 
                 container
                 justifyContent='center'
                 alignItems='center'
             >
-                {row.map((_, j) => this.renderCell(rowIndex, j))}
+                {row.map((cell, j) => this.renderCell(cell, rowIndex, j))}
             </Grid>
         );
     }
@@ -78,10 +113,11 @@ export default class Chess extends GameComponent<Move | string> {
     /**
      * Render cell at (`rowIndex`, `colIndex`)
      */
-    private renderCell(rowIndex: number, colIndex: number): JSX.Element {
+    private renderCell(cell: any | null, rowIndex: number, colIndex: number): JSX.Element {
         // Even squares are dark, odd squares are light
         const cellIndexMod: number = (rowIndex % 2) + (colIndex % 2);
         const className: string = `chess-cell ${cellClassNames[cellIndexMod]}`;
+
         // Disable `onClick` event by default
         let onClick: React.MouseEventHandler<HTMLDivElement> | undefined = undefined;
 
@@ -91,9 +127,30 @@ export default class Chess extends GameComponent<Move | string> {
                 className={className}
                 onClick={onClick}
             >
-                <img src={ChessPieces} alt='Chess Pieces' />
+                {this.renderPiece(cell)}
             </Grid>
         );
+    }
+
+    /**
+     * Render piece at (`row`, `col`)
+     */
+    private renderPiece(cell: any | null): JSX.Element | undefined {
+        // Empty cell (no piece to render)
+        if (cell === null) {
+            return undefined;
+        }
+
+        // Find corresponding PNG for piece color and type
+        const imageSrc: string | undefined = imageSrcForPiece[cell.color][cell.type];
+
+        // If no image source found, skip rendering
+        if (imageSrc === undefined) {
+            return undefined;
+        }
+
+        // Render piece's corresponding PNG image
+        return <img src={imageSrc} alt={`${cell.color}${cell.type}`} />
     }
 
     // ===================================================================

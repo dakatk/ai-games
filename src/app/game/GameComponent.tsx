@@ -256,8 +256,8 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
         } else {
             return [
                 this.renderWinMessage(),
-                <Box key={2}>{this.renderChild()}</Box>,
-                <Box key={3} className='game-padding'></Box>
+                <Box key={1}>{this.renderChild()}</Box>,
+                <Box key={2} className='game-padding'></Box>
             ];
         }
     }
@@ -273,7 +273,7 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
      * Message shown after game has ended
      */
     private renderWinMessage(): JSX.Element {
-        return <Box key={1} className='win-message'>{this.state.winMessage}</Box>
+        return <Box key={0} className='win-message'>{this.state.winMessage}</Box>
     }
 
     // ===================================================================
