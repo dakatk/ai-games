@@ -14,6 +14,9 @@ import ChessLogic from './logic/Chess';
 // Chess library
 import { Move } from '../../lib/chess';
 
+// Chess pieces image
+import ChessPieces from '../../resources/chess_pieces.png';
+
 // Stylesheet
 import './Chess.scss'
 
@@ -88,31 +91,10 @@ export default class Chess extends GameComponent<Move | string> {
                 className={className}
                 onClick={onClick}
             >
+                <img src={ChessPieces} alt='Chess Pieces' />
             </Grid>
         );
     }
-
-    /**
-     * Render piece for cell (`row`, `col`)
-     */
-    // private renderPiece(row: number, col: number): JSX.Element | undefined {
-    //     if (this.state.board === undefined) {
-    //         return undefined;
-    //     }
-        
-    //     const pieceValue = this.state.board[row][col];
-
-    //     switch (pieceValue) {
-    //         case Player.HUMAN:
-    //             return <ClearIcon className='piece' />;
-
-    //         case Player.CPU:
-    //             return <PanoramaFishEyeIcon className='piece' />;
-
-    //         default:
-    //             return undefined;
-    //     }
-    // }
 
     // ===================================================================
 }

@@ -201,7 +201,11 @@ export default class GameComponent<TMove> extends AsyncComponent<GameProps, Game
         }
 
         this.gameLogic.reset();
-        this.setState({ board: this.gameLogic.board });
+        this.setState({ 
+            gameover: false,
+            winMessage: undefined,
+            board: this.gameLogic.board
+         });
     }
 
     private contextIsDirty(): boolean {
