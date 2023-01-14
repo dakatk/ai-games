@@ -1,13 +1,14 @@
 {
   "files": {
     "main.css": "/ai-games/static/css/main.01ac7c8b.css",
-    "main.js": "/ai-games/static/js/main.cd7d084e.js",
+    "main.js": "/ai-games/static/js/main.40e75c54.js",
+    "static/media/chess_pieces.png": "/ai-games/static/media/chess_pieces.38a83136abf40ddc51c2.png",
     "index.html": "/ai-games/index.html",
     "main.01ac7c8b.css.map": "/ai-games/static/css/main.01ac7c8b.css.map",
-    "main.cd7d084e.js.map": "/ai-games/static/js/main.cd7d084e.js.map"
+    "main.40e75c54.js.map": "/ai-games/static/js/main.40e75c54.js.map"
   },
   "entrypoints": [
     "static/css/main.01ac7c8b.css",
-    "static/js/main.cd7d084e.js"
+    "static/js/main.40e75c54.js"
   ]
 }
